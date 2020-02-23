@@ -1,31 +1,35 @@
-pipeline { 
-    agent {
-        label 'Docker Hub'
-    }   
-    agent {        
-        docker { image 'node:10-alpine' }
-    }
-    stages {
-        stage('Restore') {
-            steps {
-                sh 'npm install'
-            }
+pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        echo 'Checkout master branch'
+        checkout scm
+        dir('webapp') {
+          sh 'npm install'
         }
-        stage('Build') {
-            steps {
-                sh 'npm run-script build'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'ng run-script test'
-            }
-        }        
-        stage('Deploy') {
-            steps {
-                sh 'rm ../../apps/*'
-                sh 'cp ./dist/apps/* ../../apps/'
-            }
-        }             
+      }
     }
+    stage('Build') {
+      steps {
+        echo 'Building..'
+        dir('webapp') {
+          sh 'npm run ng -- build --prod --baseHref=/webapp/ -optimization=true'
+        }
+      }
+    }
+    stage('Deploy') {
+      steps {
+        echo 'Deploying....'
+      }
+    }
+  }
+  post {
+    success {
+      slackSend(color: '#00FF00', message: "Build Successful")
+    }
+    failure {
+      slackSend(color: '#FF0000', message: "Build Failed")
+    }
+  }
 }
