@@ -1,6 +1,6 @@
 pipeline {    
     agent {
-        labl 'Docker Hub'
+        label 'Docker Hub'
         docker { image 'node:10-alpine' }
     }
     stages {
