@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "rental-car-frontend": {
@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "rental-car-frontend"
+    }
+  },
+  "defaultProject": "rental-car-frontend",
+  "cli": {
+    "analytics": "408c0fe6-64c9-47b2-971c-de8ca4b3ba5f"
+  }
 }
