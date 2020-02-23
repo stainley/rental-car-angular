@@ -1,35 +1,26 @@
 pipeline {
-  agent any
-  stages {
-    stage('Checkout') {
-      steps {
-        echo 'Checkout master branch'
-        checkout scm
-        dir('webapp') {
-          sh 'npm install'
+    agent any
+    stages {
+        stage('Restore') {
+            steps {
+                sh 'npm install'
+            }
         }
-      }
-    }
-    stage('Build') {
-      steps {
-        echo 'Building..'
-        dir('webapp') {
-          sh 'npm run ng -- build --prod --baseHref=/webapp/ -optimization=true'
+        stage('Build') {
+            steps {
+                sh 'npm run-script build'
+            }
         }
-      }
+        stage('Test') {
+            steps {
+                sh 'ng run-script test'
+            }
+        }        
+        stage('Deploy') {
+            steps {
+                sh 'rm ../../apps/*'
+                sh 'cp ./dist/apps/* ../../apps/'
+            }
+        }             
     }
-    stage('Deploy') {
-      steps {
-        echo 'Deploying....'
-      }
-    }
-  }
-  post {
-    success {
-      slackSend(color: '#00FF00', message: "Build Successful")
-    }
-    failure {
-      slackSend(color: '#FF0000', message: "Build Failed")
-    }
-  }
 }
