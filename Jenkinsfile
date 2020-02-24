@@ -1,6 +1,6 @@
 pipeline {
   agent none
-  stages {
+  stages {    
     stage('Fetch dependencies') {
       agent {
         docker 'circleci/node:9.3-stretch-browsers'
@@ -8,6 +8,18 @@ pipeline {
       steps {
         sh 'yarn'
         stash includes: 'node_modules/', name: 'node_modules'
+      }
+    }
+    stage('Code Quality') {
+      steps {
+        container('Sonarqube Scanner') {
+          withSonarQubeEnv('Sonarqube') {
+            sh '/usr/local/sonar-scanner'
+          }
+          timeout(time: 10, unit:'MINUTES') {
+            waitForQualityGate abortPipeline: true
+          }
+        }
       }
     }
     stage('Lint') {
