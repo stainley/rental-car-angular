@@ -4,9 +4,9 @@ agent any
   tools {nodejs "nodejs"}
  
   stages {
-    stage('Example') {
+    stage('Build') {
       steps {
-        sh 'npm config ls'
+        sh 'npm install'
       }
     }
   }
