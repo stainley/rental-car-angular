@@ -7,9 +7,8 @@ agent any
  
   stages {
     stage('Build') {
-      steps {
-        echo '$nodejs'
-        //sh 'npm install'
+      steps {        
+        sh 'npm --version'
       }
     }
   }
