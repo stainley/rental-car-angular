@@ -1,25 +1,30 @@
 pipeline {
     agent any
+    
     stages {
-        stage('Restore') {
+        stage('Checkout SCM') {
+            steps {
+                echo 'Running'
+            }
+        }
+        stage('install node modules') {
             steps {
                 sh 'npm install'
             }
         }
         stage('Build') {
             steps {
-                sh 'npm run-script build'
+                sh 'npm run build:ssr'
             }
         }
         stage('Test') {
             steps {
-                sh 'ng run-script test'
+                sh 'ng run test'
             }
         }        
         stage('Deploy') {
             steps {
-                sh 'rm ../../apps/*'
-                sh 'cp ./dist/apps/* ../../apps/'
+                sh 'pm2 restart all'                
             }
         }             
     }
